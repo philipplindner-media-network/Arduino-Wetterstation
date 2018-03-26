@@ -21,8 +21,8 @@
   </tr>
  
 <?php
-mysql_connect("localhost","templog","1EFe5AnPCkdYqRIv");
-mysql_select_db("templog");
+mysql_connect("localhost","[db]","[password]");
+mysql_select_db("[db]");
 
 $sql = "select * from TempLog where id like '%' order by timestamp DESC";
  
