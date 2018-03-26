@@ -8,11 +8,8 @@
 </head>
 <body text="#FFFFFF" bgcolor="#000000" link="#FF0000" alink="#FF0000" vlink="#FF0000">
 <center>
-<img src="http://philipp-lindner-server.p7.de:8080/?action=stream"  width="900" height="700" />
-<br>
-<br>
  <?php
- $s = simplexml_load_file("http://192.168.178.70");
+ $s = simplexml_load_file("http://[Arduino-IP]");
  $temp03=$s->tem2;
  $temp05=$s->tem4;
 
