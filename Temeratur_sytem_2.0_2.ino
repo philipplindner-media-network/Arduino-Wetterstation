@@ -2,6 +2,7 @@
  * Temperatur System mit DS18B20
  * Autor: Philipp Linener post@philipp-lindner.de
  * www.philipp-lindmer.de
+ * https://github.com/philipplindner-media-network/Ardoino-Wetterstation
  */
 
  /*
@@ -12,27 +13,23 @@
 #include <SPI.h>
 #include <SD.h>
 #include <Ethernet.h>
-#include <DHT.h>
+#include <dht11.h>
 #include <Adafruit_BMP085.h>
-
-
 
 OneWire oW(7);
 DallasTemperature sen(&oW);
 
 const int cS = 4;
 
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xFF };
-IPAddress ip(192, 168, 178, 70);
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xFF }; //MAC=DE:AD:BE:EF:FE:FF
+IPAddress ip(XXX, XXX, XXX, XXX);                    //IP= 192.168.0.200 > 192, 168, 0, 200
 EthernetServer server(80);
 
-long randNumber;
-/*
-#define DHTPIN 8
-#define DHTTYPE DHT11
-DHT dht(DHTPON,DHTTYPE);
-Adafruit-BMP085 bmp;
-*/
+dht11 DHT11;
+#define DHT11PIN 8
+
+Adafruit_BMP085 bmp;
+
  
 /*
  * PROGRAM
@@ -44,7 +41,7 @@ void setup() {
   //Server
   Ethernet.begin(mac, ip);
   server.begin();
-  Serial.println("Temperatur System by Philipp Lindner");
+  Serial.println("Temperatur System by Philipp Lindner v.2.0.2");
   Serial.println("Server Gestartet unter IP: ");
   Serial.print(Ethernet.localIP());
   
@@ -53,10 +50,10 @@ void setup() {
   sen.begin();
   Serial.println("Sensoren Gestartet....");
 
-  /*
-   * dht.begin();
-   * bmp.begin();
-   */
+  if (!bmp.begin()) {
+  Serial.println("Could not find a valid BMP085 sensor, check wiring!");
+  while (1) {}
+  }
 
   
   //SD Carte
@@ -72,29 +69,28 @@ void setup() {
 void loop() {
   //Sensoren
   sen.requestTemperatures();
+  int chk = DHT11.read(DHT11PIN);
 
   Serial.print("Temp 1:");
   Serial.println(sen.getTempCByIndex(0));
-   Serial.println("Temp 2:");
+  Serial.println("Temp 2:");
   Serial.println(sen.getTempCByIndex(1));
-   Serial.println("Temp 3:");
+  Serial.println("Temp 3:");
   Serial.println(sen.getTempCByIndex(2));
-   Serial.println("Temp 4:");
+  Serial.println("Temp 4:");
   Serial.println(sen.getTempCByIndex(3));
-   Serial.println("Temp 5:");
+  Serial.println("Temp 5:");
   Serial.println(sen.getTempCByIndex(4));
-
-  /*
-   * Serial.println("Temperatur 6:");
-   * Serial.println(dht.readTemperature());
-   * Serial.println("Luftfeuchtigkeit:");
-   * Serial.println(dht.readHumidity());
-   * Serial.println("Luftdruck:");
-   * Serial.println(bmp.readPressure());
-   */
-
+  Serial.print("Temp: ");
+  Serial.print((float)DHT11.temperature, 2);
+  Serial.print(" C");
+  Serial.print("RelF: ");
+  Serial.print((float)DHT11.humidity, 2);
+  Serial.print(" %");
+  Serial.print("Pressure: ");
+  Serial.println(bmp.readPressure());
+   
   String data ="";
-  randNumber = random(300);
          
    for (int i = 0; i<5; i++)
    {
@@ -102,16 +98,17 @@ void loop() {
       data +=",";
       data +=sen.getTempCByIndex(i);
       data +=",";
-    //data +=dht.readTemperature();
-    //data +=",";
     //date +=dht.readHumidity();
     //data +=",";
-    //data +=bmp.readPressure();
-      data +=randNumber;
    }
-   data +="|-|";
+   data +=(float)DHT11.humidity, 2;
+   data +=",";
+   data +=(float)DHT11.temperature, 2;
+   data +=",";
+   data +=bmp.readPressure();
+   data +="";
 
-  File dF = SD.open("templog.tsSC", FILE_WRITE);
+  File dF = SD.open("templog.csv", FILE_WRITE);
   if (dF)
   {
     dF.println(data);
@@ -156,13 +153,20 @@ void loop() {
       data2 +=i;
       data2 +=">";
       data2 +=sen.getTempCByIndex(i);
-      data2 +="|";
-      data2 +=millis();;
       data2 +="</tem";
       data2 +=i;
       data2 +=">";
    }
           client.println(data2);
+          client.println("<luftF>");
+          client.println((float)DHT11.humidity, 2);
+          client.println("</luftF>");
+          client.println("<luftT>");
+          client.println((float)DHT11.temperature, 2);
+          client.println("</luftT>");
+          client.println("<luftD>");
+          client.println(bmp.readPressure());
+          client.println("</luftD>");
           client.println("</Tempsys>");
           break;
         }
@@ -181,7 +185,6 @@ void loop() {
     client.stop();
     Serial.println("client disconnected");
   }
-  
-   delay(1000);
-}
 
+    delay(1000);
+}
