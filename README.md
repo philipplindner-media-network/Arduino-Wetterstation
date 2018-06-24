@@ -27,3 +27,5 @@ Herunterladen Ardoino Ordner inhalt mit Aruino Programm offen volgende Bibliothe
 - Adafruit_BMP085.h > https://github.com/adafruit/Adafruit-BMP085-Library
 
 Die Sketch datei uns in breich MAC und IPAddres angepass weden.
+
+Bilder unter http://www.philipp-lindner.de/arduino-wetterstation/bilder.html
