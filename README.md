@@ -11,12 +11,12 @@ Diese Programm steuer mehere Sensoren an und gebt dies über die Ethernet eine X
 - DHT11 oder DHT22 (Lufteuchte und Temperatur Sensor)
 - BMP085 (Luftdruck Sensor)
 
-###Belegung
+### Belegung
 - DS18B20 auf pin 7 + v5 + GND
 - DHT11 / DHT22 auf 8 + v5 + GND
 - BMP085 auf 20 (SDA) + 21 (SCL) + v3,3 + GND
 
-###Install
+### Install
 Herunterladen Ardoino Ordner inhalt mit Aruino Programm offen volgende Bibliotheken Instaliren
 - Ethernet
 - OneWire
