@@ -28,4 +28,4 @@ Herunterladen Ardoino Ordner inhalt mit Aruino Programm offen volgende Bibliothe
 
 Die Sketch datei uns in breich MAC und IPAddres angepass weden.
 
-Beitrag auf meie WEB-Seite : http://anic.tk/2p5XKQN or https://blog.philipp-lindner.de/b2e/philipp-lindner-blog/meine-keine-wetterstatin
+Beitrag auf meie WEB-Seite : http://anic.tk/2p5XKQN or https://blog.philipp-lindner.de/2021/08/18/13_wetterstation-mit-arduino-und-esp.html
